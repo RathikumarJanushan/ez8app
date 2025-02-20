@@ -1,0 +1,88 @@
+{
+  "project_info": {
+    "project_number": "140280390014",
+    "project_id": "ez8testdb",
+    "storage_bucket": "ez8testdb.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:140280390014:android:92bbee577b69c234d0532f",
+        "android_client_info": {
+          "package_name": "com.example.ez8"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "140280390014-9f389f1amj566hlpb5mtbq0nua1eoe00.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA81cu7wkkX59Si5ivnTYt6UyV8MDz7hJw"
+        },
+        {
+          "current_key": "AIzaSyCkoebC1CvpA26VcvF6hofcHQ1mhFATAX8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "140280390014-9f389f1amj566hlpb5mtbq0nua1eoe00.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "140280390014-07vvh95b0rqcqbtoauqmbruoorqisvsr.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.ez8"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:140280390014:android:988441589a622861d0532f",
+        "android_client_info": {
+          "package_name": "com.example.ez8app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "140280390014-9f389f1amj566hlpb5mtbq0nua1eoe00.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA81cu7wkkX59Si5ivnTYt6UyV8MDz7hJw"
+        },
+        {
+          "current_key": "AIzaSyCkoebC1CvpA26VcvF6hofcHQ1mhFATAX8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "140280390014-9f389f1amj566hlpb5mtbq0nua1eoe00.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "140280390014-07vvh95b0rqcqbtoauqmbruoorqisvsr.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.ez8"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
