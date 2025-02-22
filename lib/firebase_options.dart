@@ -63,7 +63,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '140280390014',
     projectId: 'ez8testdb',
     storageBucket: 'ez8testdb.firebasestorage.app',
-    iosClientId: '140280390014-65nalpnbdjh5c7odf811vueivat9j2pf.apps.googleusercontent.com',
+    iosClientId:
+        '140280390014-65nalpnbdjh5c7odf811vueivat9j2pf.apps.googleusercontent.com',
     iosBundleId: 'com.example.ez8app',
   );
 }
