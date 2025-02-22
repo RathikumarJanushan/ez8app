@@ -10,7 +10,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 void main() async {
   // Ensure that plugin services are initialized so that you can use them later.
   WidgetsFlutterBinding.ensureInitialized();
-
+//---------------Old one----------------
   // // Initialize Firebase with the default options.
   // await Firebase.initializeApp(
   //   options: DefaultFirebaseOptions.currentPlatform,
