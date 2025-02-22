@@ -18,9 +18,10 @@ void main() async {
 
   // // Run the app after Firebase has been initialized.
   // runApp(MyApp());
+
   try {
-    await dotenv.load();
-    Stripe.publishableKey = dotenv.env['STRIPE_PUBLISHABLE_KEY'] ?? '';
+    Stripe.publishableKey =
+        "pk_test_51PqE2VJagzksd4IZAiiSe2LY2jx3RFuKa60hDgS2tYKiGCEkofj0TYIzx5wapng6pC068iq4AD1iKfuD1oTFLDJI00YUjZf3LZ";
 
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
@@ -28,7 +29,7 @@ void main() async {
 
     runApp(MyApp());
   } catch (e) {
-    // runApp(ErrorApp());
+    // runApp(ErrorApp()); // Show error UI if initialization fails
   }
 }
 
