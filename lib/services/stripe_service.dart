@@ -151,7 +151,6 @@ class StripeService {
         // Mobile: Use Stripe Payment Sheet
         return await _startMobilePayment(amount, currency);
       } else {
-        // Web: Use Stripe Checkout
         return false; //await _startWebPayment(amount, currency);
       }
     } catch (e) {
@@ -169,7 +168,9 @@ class StripeService {
       await Stripe.instance.initPaymentSheet(
         paymentSheetParameters: SetupPaymentSheetParameters(
           paymentIntentClientSecret: clientSecret,
-          merchantDisplayName: "EZ8 Store",
+          merchantDisplayName: "EZ8",
+          // applePay: const PaymentSheetApplePay(merchantCountryCode: "US"),
+          // googlePay: const PaymentSheetGooglePay(merchantCountryCode: "US"),
         ),
       );
 
