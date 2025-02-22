@@ -43,6 +43,12 @@ dependencies:
   intl: ^0.20.2
   flutter_typeahead: ^5.2.0
 
+  # ----------------KVP-------------
+  flutter_stripe: ^11.4.0
+  dio: ^5.8.0+1
+  # flutter_stripe_web: ^6.4.0
+  flutter_dotenv: ^5.1.0
+
 
 dev_dependencies:
   flutter_test:
