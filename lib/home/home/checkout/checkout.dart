@@ -11,6 +11,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'shipping_address/shipping_address.dart';
 
+import 'package:ez8app/services/stripe_service.dart';
+
 class CheckoutPage extends StatefulWidget {
   final String hotelId;
   final String hotelName;
@@ -225,6 +227,119 @@ class _CheckoutPageState extends State<CheckoutPage> {
   // 4) Save Order to Firestore (with sequential AJ#### document ID)
   // -------------------------------------------------------------------
 
+  // Future<void> _saveOrder() async {
+  //   final user = _auth.currentUser;
+  //   if (user == null) {
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       SnackBar(content: Text(Translations.text('userNotAuthenticated'))),
+  //     );
+  //     return;
+  //   }
+
+  //   if (_shippingAddress == null) {
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       SnackBar(
+  //         content: Text(Translations.text('selectShippingAddressFirst')),
+  //       ),
+  //     );
+  //     return;
+  //   }
+
+  //   // Generate next order ID
+  //   String newOrderId = await _generateNextOrderId();
+  //   if (newOrderId.isEmpty) {
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       SnackBar(
+  //         content: Text(Translations.text('errorGeneratingOrderID')),
+  //       ),
+  //     );
+  //     return;
+  //   }
+
+  //   // Compile order data
+  //   final orderData = {
+  //     'userId': user.uid,
+  //     'hotelId': widget.hotelId,
+  //     'hotelName': widget.hotelName,
+  //     'hotelAddress': _hotelAddress ?? "",
+  //     'cartItems': widget.cartItems,
+  //     'total': widget.total,
+  //     'status': 'pending',
+  //     'shippingAddress': {
+  //       'name': _shippingAddress!['contactName'] ?? '',
+  //       'mobile': _shippingAddress!['contactMobile'] ?? '',
+  //       'country': _shippingAddress!['country'] ?? '',
+  //       'address':
+  //           "${_shippingAddress!['streetName'] ?? ''} ${_shippingAddress!['houseNo'] ?? ''}, "
+  //               "${_shippingAddress!['postalCode'] ?? ''} ${_shippingAddress!['city'] ?? ''}",
+  //     },
+  //     'paymentMethod': _selectedPaymentMethod,
+  //     'timestamp': FieldValue.serverTimestamp(),
+  //   };
+
+  //   try {
+  //     // 1) Save new order in "BillOrder"
+  //     await _firestore.collection('BillOrder').doc(newOrderId).set(orderData);
+
+  //     // 2) Delete the user's cart items for this hotel
+  //     final cartQuery = await _firestore
+  //         .collection('carts')
+  //         .where('userId', isEqualTo: user.uid)
+  //         .where('hotelId', isEqualTo: widget.hotelId)
+  //         .get();
+
+  //     for (var doc in cartQuery.docs) {
+  //       await doc.reference.delete();
+  //     }
+
+  //     // Clear local cart items
+  //     setState(() {
+  //       widget.cartItems.clear();
+  //     });
+
+  //     // Show success message
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       SnackBar(content: Text(Translations.text('orderPlaced'))),
+  //     );
+
+  //     // Navigate back to MenuPage
+  //     Navigator.push(
+  //       context,
+  //       MaterialPageRoute(
+  //         builder: (context) => MenuPage(
+  //           hotelId: widget.hotelId,
+  //           hotelName: widget.hotelName,
+  //         ),
+  //       ),
+  //     );
+  //   } catch (e) {
+  //     print("Error saving order: $e");
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       SnackBar(
+  //         content: Text(Translations.text('errorPlacingOrder')),
+  //       ),
+  //     );
+  //   }
+  // }
+//---------------------------------------------------------------------------
+  // Future<void> _saveOrder() async {
+  //   final user = _auth.currentUser;
+  //   if (user == null) {
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       SnackBar(content: Text(Translations.text('userNotAuthenticated'))),
+  //     );
+  //     return;
+  //   }
+
+  //   if (_shippingAddress == null) {
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       SnackBar(
+  //         content: Text(Translations.text('selectShippingAddressFirst')),
+  //       ),
+  //     );
+  //     return;
+  //   }
+
   Future<void> _saveOrder() async {
     final user = _auth.currentUser;
     if (user == null) {
@@ -243,82 +358,52 @@ class _CheckoutPageState extends State<CheckoutPage> {
       return;
     }
 
-    // Generate next order ID
+    // Get actual amount and currency
+    double totalAmount = widget.total;
+    String currency = "CHF";
+
+    if (_selectedPaymentMethod == "card") {
+      bool paymentSuccess =
+          await StripeService.instance.makePayment(totalAmount, currency);
+
+      if (paymentSuccess) {
+        await _processOrder(); // Only save order if payment succeeds
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Payment failed. Please try again.")),
+        );
+      }
+    } else {
+      // Proceed with Cash on Delivery
+      await _processOrder();
+    }
+  }
+
+// Save order only after successful payment
+  Future<void> _processOrder() async {
     String newOrderId = await _generateNextOrderId();
     if (newOrderId.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(Translations.text('errorGeneratingOrderID')),
-        ),
+        SnackBar(content: Text(Translations.text('errorGeneratingOrderID'))),
       );
       return;
     }
 
-    // Compile order data
-    final orderData = {
-      'userId': user.uid,
-      'hotelId': widget.hotelId,
-      'hotelName': widget.hotelName,
-      'hotelAddress': _hotelAddress ?? "",
-      'cartItems': widget.cartItems,
-      'total': widget.total,
-      'status': 'pending',
-      'shippingAddress': {
-        'name': _shippingAddress!['contactName'] ?? '',
-        'mobile': _shippingAddress!['contactMobile'] ?? '',
-        'country': _shippingAddress!['country'] ?? '',
-        'address':
-            "${_shippingAddress!['streetName'] ?? ''} ${_shippingAddress!['houseNo'] ?? ''}, "
-                "${_shippingAddress!['postalCode'] ?? ''} ${_shippingAddress!['city'] ?? ''}",
-      },
-      'paymentMethod': _selectedPaymentMethod,
-      'timestamp': FieldValue.serverTimestamp(),
-    };
-
-    try {
-      // 1) Save new order in "BillOrder"
-      await _firestore.collection('BillOrder').doc(newOrderId).set(orderData);
-
-      // 2) Delete the user's cart items for this hotel
-      final cartQuery = await _firestore
-          .collection('carts')
-          .where('userId', isEqualTo: user.uid)
-          .where('hotelId', isEqualTo: widget.hotelId)
-          .get();
-
-      for (var doc in cartQuery.docs) {
-        await doc.reference.delete();
-      }
-
-      // Clear local cart items
-      setState(() {
-        widget.cartItems.clear();
-      });
-
-      // Show success message
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(Translations.text('orderPlaced'))),
-      );
-
-      // Navigate back to MenuPage
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => MenuPage(
-            hotelId: widget.hotelId,
-            hotelName: widget.hotelName,
-          ),
-        ),
-      );
-    } catch (e) {
-      print("Error saving order: $e");
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(Translations.text('errorPlacingOrder')),
-        ),
-      );
-    }
+    print("Order successfully processed with Order ID: $newOrderId");
   }
+
+// Function to process and save order only if successful
+  // Future<void> _processOrder() async {
+  //   String newOrderId = await _generateNextOrderId();
+  //   if (newOrderId.isEmpty) {
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       SnackBar(content: Text(Translations.text('errorGeneratingOrderID'))),
+  //     );
+  //     return;
+  //   }
+
+  //   print("Order successfully processed with Order ID: $newOrderId");
+  // }
 
   /// Generate the next sequential ID in the format AJ####.
   Future<String> _generateNextOrderId() async {
