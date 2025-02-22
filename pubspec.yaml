@@ -44,18 +44,18 @@ dependencies:
   flutter_typeahead: ^5.2.0
   flutter_launcher_icons: ^0.14.3
 
-
+  # ----------------KVP-------------
+  flutter_stripe: ^11.4.0
+  dio: ^5.8.0+1
+  # flutter_stripe_web: ^6.4.0
+  flutter_dotenv: ^5.1.0
 
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: true
   image_path: "assets/icon/icon.png"
 
-  # ----------------KVP-------------
-  flutter_stripe: ^11.4.0
-  dio: ^5.8.0+1
-  # flutter_stripe_web: ^6.4.0
-  flutter_dotenv: ^5.1.0
+
 
 
 dev_dependencies:

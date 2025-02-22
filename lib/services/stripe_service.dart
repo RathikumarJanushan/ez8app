@@ -134,7 +134,6 @@
 
 // ------------------------------Stripe Payment for Android--------------------------------
 import 'dart:io' show Platform;
-import 'dart:html' as html; // For Web redirection
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:dio/dio.dart';
 import 'package:dio/dio.dart';
@@ -153,7 +152,7 @@ class StripeService {
         return await _startMobilePayment(amount, currency);
       } else {
         // Web: Use Stripe Checkout
-        return await _startWebPayment(amount, currency);
+        return false; //await _startWebPayment(amount, currency);
       }
     } catch (e) {
       print("Error during payment: $e");
@@ -179,22 +178,6 @@ class StripeService {
       return true;
     } catch (e) {
       print("Error during mobile payment: $e");
-      return false;
-    }
-  }
-
-  Future<bool> _startWebPayment(double amount, String currency) async {
-    try {
-      String? checkoutUrl = await _createCheckoutSession(amount, currency);
-      if (checkoutUrl != null) {
-        html.window.open(checkoutUrl, "_blank");
-        return true;
-      } else {
-        print("Error: Failed to get checkout URL.");
-        return false;
-      }
-    } catch (e) {
-      print("Error during web payment: $e");
       return false;
     }
   }
