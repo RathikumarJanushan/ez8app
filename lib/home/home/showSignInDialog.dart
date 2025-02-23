@@ -1,3 +1,6 @@
+// Make sure this file contains the showForgotPasswordDialog function.
+import 'package:ez8app/home/home/showForgotPasswordDialog.dart';
+import 'package:ez8app/home/home/showRegisterDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -20,7 +23,7 @@ void showSignInDialog(BuildContext context, FirebaseAuth auth,
         elevation: 5,
         child: Container(
           // Constrain the dialog width.
-          constraints: BoxConstraints(maxWidth: 400),
+          constraints: BoxConstraints(maxWidth: 420),
           padding: const EdgeInsets.all(20),
           // Make content scrollable on small screens.
           child: SingleChildScrollView(
@@ -65,34 +68,39 @@ void showSignInDialog(BuildContext context, FirebaseAuth auth,
                     try {
                       final GoogleSignInAccount? googleUser =
                           await googleSignIn.signIn();
-                      if (googleUser == null) {
-                        return; // User cancelled the sign-in.
-                      }
-
+                      if (googleUser == null) return; // User cancelled.
                       final GoogleSignInAuthentication googleAuth =
                           await googleUser.authentication;
-
                       final OAuthCredential credential =
                           GoogleAuthProvider.credential(
                         accessToken: googleAuth.accessToken,
                         idToken: googleAuth.idToken,
                       );
-
                       await auth.signInWithCredential(credential);
                       updateDisplayName(googleUser.displayName ?? 'User');
                       Navigator.of(context).pop(); // Close dialog
 
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Sign In Successful! Welcome!')),
+                        SnackBar(
+                          content: Text('Sign In Successful! Welcome!'),
+                        ),
                       );
 
-                      // Check if admin and navigate
+                      // Check if admin and navigate.
                       if (auth.currentUser?.email == 'admin@gmail.com') {
                         Navigator.pushNamed(context, '/adminPage');
                       }
-                    } catch (e) {
+                    } on FirebaseAuthException catch (_) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Error: ${e.toString()}')),
+                        SnackBar(
+                          content: Text('Incorrect user or password'),
+                        ),
+                      );
+                    } catch (_) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Incorrect user or password'),
+                        ),
                       );
                     }
                   },
@@ -137,15 +145,14 @@ void showSignInDialog(BuildContext context, FirebaseAuth auth,
                   children: [
                     TextButton(
                       onPressed: () {
-                        Navigator.of(context).pop(); // Close dialog
+                        Navigator.of(context).pop(); // Close dialog.
                       },
                       child: Text('Cancel'),
                     ),
                     const SizedBox(width: 10),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                            Colors.redAccent, // HomePage button color.
+                        backgroundColor: Colors.redAccent,
                         foregroundColor: Colors.white,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
@@ -159,26 +166,32 @@ void showSignInDialog(BuildContext context, FirebaseAuth auth,
                       ),
                       onPressed: () async {
                         try {
-                          UserCredential userCredential =
-                              await auth.signInWithEmailAndPassword(
+                          await auth.signInWithEmailAndPassword(
                             email: emailController.text,
                             password: passwordController.text,
                           );
-
                           updateDisplayName(emailController.text.split('@')[0]);
-                          Navigator.of(context).pop(); // Close dialog
-
+                          Navigator.of(context).pop(); // Close dialog.
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('Sign In Successful!')),
+                            SnackBar(
+                              content: Text('Sign In Successful!'),
+                            ),
                           );
-
                           // Check if admin and navigate.
                           if (emailController.text == 'admin@gmail.com') {
                             Navigator.pushNamed(context, '/adminPage');
                           }
-                        } catch (e) {
+                        } on FirebaseAuthException catch (_) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('Error: ${e.toString()}')),
+                            SnackBar(
+                              content: Text('Incorrect user or password'),
+                            ),
+                          );
+                        } catch (_) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Incorrect user or password'),
+                            ),
                           );
                         }
                       },
@@ -186,6 +199,48 @@ void showSignInDialog(BuildContext context, FirebaseAuth auth,
                     ),
                   ],
                 ),
+                const SizedBox(height: 10),
+// Row for links: Forgot Password and Register.
+                Column(
+                  mainAxisAlignment:
+                      MainAxisAlignment.center, // adjust as needed
+                  children: [
+                    // Forgot Password link.
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop(); // Close sign in dialog.
+                        showForgotPasswordDialog(context, auth);
+                      },
+                      style: TextButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 8),
+                        foregroundColor: Colors.blueAccent,
+                      ),
+                      child: const Text(
+                        "Forgot Password?",
+                        style: TextStyle(fontSize: 14),
+                      ),
+                    ),
+                    // Add some spacing between the buttons if needed.
+                    const SizedBox(height: 8),
+                    // Register link.
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop(); // Close sign in dialog.
+                        showRegisterDialog(context, auth, updateDisplayName);
+                      },
+                      style: TextButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 8),
+                        foregroundColor: Colors.blueAccent,
+                      ),
+                      child: const Text(
+                        "Don't have an account? Signup",
+                        style: TextStyle(fontSize: 14),
+                      ),
+                    ),
+                  ],
+                )
               ],
             ),
           ),
