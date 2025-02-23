@@ -1,3 +1,4 @@
-const String stripePublishablekey = "pk_test_51PqE2VJagzksd4IZAiiSe2LY2jx3RFuKa60hDgS2tYKiGCEkofj0TYIzx5wapng6pC068iq4AD1iKfuD1oTFLDJI00YUjZf3LZ";
-const String stripeSecretkey = "sk_test_51PqE2VJagzksd4IZJzrRZM5NZtnVNNodQFVILNeUsoV8Xv9K6Pn0M9cOTB2jE0Gb3BVXGaK0waW4yUTzRX1Gpu8200WrLPSToH";
-
+const String stripePublishablekey =
+    "pk_live_51Qvc73KKxmTEO1fzu4l5E0T3rhnhMO7eRtZCA39TnLa8fnq1rm84lOlcEZV7Mv6czQAhME1FDGXj43l2yg1APkD5000nYwiJKt";
+const String stripeSecretkey =
+    "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";
