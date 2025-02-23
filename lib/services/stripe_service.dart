@@ -169,8 +169,18 @@ class StripeService {
         paymentSheetParameters: SetupPaymentSheetParameters(
           paymentIntentClientSecret: clientSecret,
           merchantDisplayName: "EZ8",
-          // applePay: const PaymentSheetApplePay(merchantCountryCode: "US"),
-          // googlePay: const PaymentSheetGooglePay(merchantCountryCode: "US"),
+          billingDetailsCollectionConfiguration:
+              const BillingDetailsCollectionConfiguration(
+            // These use `CollectionMode`
+            name: CollectionMode.automatic,
+            phone: CollectionMode.automatic,
+            email: CollectionMode.automatic,
+
+            // Address uses `AddressCollectionMode`
+            address: AddressCollectionMode.never,
+          ),
+          // applePay: const PaymentSheetApplePay(),
+          // googlePay: const PaymentSheetGooglePay(),
         ),
       );
 

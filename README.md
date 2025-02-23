@@ -29,3 +29,13 @@ git push -u origin janu5
 git checkout 
 
 git pull origin janu3
+
+
+
+
+cd ios
+rm -rf Pods Podfile.lock
+pod install
+cd ..
+flutter clean
+flutter pub get
