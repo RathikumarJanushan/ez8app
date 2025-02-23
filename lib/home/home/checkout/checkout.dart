@@ -51,6 +51,9 @@ class _CheckoutPageState extends State<CheckoutPage> {
   // Store the route distance as a string (e.g., "10.3 km")
   String? _routeDistance;
 
+  // NEW: Keep track of the hotel’s delivery-limit in km.
+  double? _deliveryLimitedKm;
+
   // Google Distance Matrix API Key (REPLACE WITH YOUR ACTUAL KEY)
   static const String _googleApiKey = 'AIzaSyDZ4hbmbThC3zLmVOCC6VyVgCEnip-Tmxw';
 
@@ -69,7 +72,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
       _fetchDefaultShippingAddress();
     }
 
-    // Fetch the hotel address
+    // Fetch the hotel address (and the delivery limit)
     _fetchHotelAddress();
   }
 
@@ -124,6 +127,10 @@ class _CheckoutPageState extends State<CheckoutPage> {
         final data = docSnap.data()!;
         setState(() {
           _hotelAddress = data['address'] ?? "";
+          // NEW: store delivery-limited-km
+          _deliveryLimitedKm = (data['delivery_limited_km'] is num)
+              ? data['delivery_limited_km'].toDouble()
+              : null;
         });
       }
     } catch (e) {
@@ -224,9 +231,47 @@ class _CheckoutPageState extends State<CheckoutPage> {
     }
   }
 
-//----------------------KVP : save order for Cash on delevery &  stripe Changes for order confirmation-------------------------------------------
+  // -------------------------------------------------------------------
+  // 4) Save Order & Payment
+  // -------------------------------------------------------------------
 
   Future<void> _saveOrder() async {
+    // NEW: Check if user is in range
+    if (_deliveryLimitedKm != null && _routeDistance != null) {
+      try {
+        // Parse the string like "10.5 km" to double (handle comma or decimal).
+        final extractedDistance = _routeDistance!
+            .split(' ')[0] // "10.5" from "10.5 km"
+            .replaceAll(',', '.'); // "1,234" -> "1.234"
+        final distanceValue = double.parse(extractedDistance);
+
+        // If the user's distance is more than the hotel's allowed distance
+        if (distanceValue > _deliveryLimitedKm!) {
+          // Show popup and return
+          showDialog(
+            context: context,
+            builder: (_) => AlertDialog(
+              title: Text(Translations.text('cannotDeliverTitle')),
+              content: Text(
+                "${Translations.text('cannotDeliverMessage')} "
+                "${_deliveryLimitedKm!.toStringAsFixed(0)} km",
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text(Translations.text('ok')),
+                ),
+              ],
+            ),
+          );
+          return;
+        }
+      } catch (e) {
+        // If parsing fails or other errors, we simply don't block the order
+        print("Error parsing or comparing distance: $e");
+      }
+    }
+
     final user = _auth.currentUser;
     if (user == null) {
       ScaffoldMessenger.of(context).showSnackBar(

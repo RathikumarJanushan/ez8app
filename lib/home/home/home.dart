@@ -166,7 +166,7 @@ class _HomePageState extends State<HomePage> {
                               children: [
                                 // Display the menu image using CachedNetworkImage.
                                 Container(
-                                  height: 130,
+                                  height: 110,
                                   decoration: BoxDecoration(
                                     color: Colors.grey[300],
                                   ),
