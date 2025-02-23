@@ -241,7 +241,7 @@ class StripeService {
         ),
         data: {
           "amount": (amount * 100).toInt().toString(),
-          "currency": currency,
+          "currency": currency ?? "chf",
         },
       );
 

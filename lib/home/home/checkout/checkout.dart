@@ -12,6 +12,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'shipping_address/shipping_address.dart';
 
 import 'package:ez8app/services/stripe_service.dart';
+import 'package:ez8app/home/home/loading_page.dart';
 
 class CheckoutPage extends StatefulWidget {
   final String hotelId;
@@ -251,6 +252,13 @@ class _CheckoutPageState extends State<CheckoutPage> {
           await StripeService.instance.makePayment(totalAmount, currency);
 
       if (paymentSuccess) {
+        // Show the loading dialog immediately after payment succeeds
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (context) => const LoadingPage(),
+        );
+
         await _processOrder(); //  Save order only after successful payment
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
