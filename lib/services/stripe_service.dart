@@ -169,8 +169,6 @@ class StripeService {
         paymentSheetParameters: SetupPaymentSheetParameters(
           paymentIntentClientSecret: clientSecret,
           merchantDisplayName: "EZ8",
-          // applePay: const PaymentSheetApplePay(merchantCountryCode: "US"),
-          // googlePay: const PaymentSheetGooglePay(merchantCountryCode: "US"),
         ),
       );
 
@@ -231,7 +229,7 @@ class StripeService {
         ),
         data: {
           "amount": (amount * 100).toInt().toString(),
-          "currency": currency,
+          "currency": currency ?? "chf",
         },
       );
 
