@@ -2,7 +2,8 @@ import 'package:ez8app/home/home/showSignInDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'email_verification_screen.dart'; // <-- Import the verification screen
+import 'email_verification_screen.dart'; // <-- Import your verification screen
+import 'package:ez8app/home/translations/translations.dart';
 
 // Standard style constants
 const kDialogTitleStyle = TextStyle(
@@ -27,7 +28,7 @@ final kElevatedButtonStyle = ElevatedButton.styleFrom(
 );
 
 final kCancelButtonStyle = TextButton.styleFrom(
-  foregroundColor: Colors.grey[700],
+  foregroundColor: Colors.grey,
   textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
 );
 
@@ -37,78 +38,101 @@ bool isValidEmail(String email) {
   return emailRegex.hasMatch(email);
 }
 
-void showRegisterDialog(BuildContext context, FirebaseAuth auth,
-    Function(String) updateDisplayName) {
+void showRegisterDialog(
+  BuildContext context,
+  FirebaseAuth auth,
+  Function(String) updateDisplayName,
+) {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
+  /// Updated: Remove the explicit `clientId`.
+  /// On Android & iOS, the client ID typically comes from google-services.json
+  /// (Android) or GoogleService-Info.plist (iOS).
   Future<void> handleGoogleSignIn() async {
     try {
-      final GoogleSignIn googleSignIn = GoogleSignIn(
-        clientId:
-            '517860411324-ufornbtjobhjds68519mdb9g0q276enk.apps.googleusercontent.com',
-      );
+      final GoogleSignIn googleSignIn = GoogleSignIn();
       final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
-      if (googleUser != null) {
-        final GoogleSignInAuthentication googleAuth =
-            await googleUser.authentication;
-        final OAuthCredential credential = GoogleAuthProvider.credential(
-          accessToken: googleAuth.accessToken,
-          idToken: googleAuth.idToken,
-        );
-        UserCredential userCredential =
-            await auth.signInWithCredential(credential);
-        updateDisplayName(userCredential.user?.displayName ?? "Google User");
-        Navigator.of(context).pop(); // Close dialog.
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Google Sign-In Successful! Welcome!')),
-        );
-      }
+
+      if (googleUser == null) return; // User canceled Google Sign-In.
+
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+
+      final OAuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      UserCredential userCredential =
+          await auth.signInWithCredential(credential);
+
+      // Update the display name from the Google user (if available).
+      updateDisplayName(
+          userCredential.user?.displayName ?? Translations.text('googleUser'));
+
+      Navigator.of(context).pop(); // Close dialog.
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(Translations.text('googleSignInSuccessful')),
+        ),
+      );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Google Sign-In Error: ${e.toString()}')),
+        SnackBar(
+          content: Text(
+            Translations.text('googleSignInError',
+                params: {'error': e.toString()}),
+          ),
+        ),
       );
     }
   }
 
   showDialog(
     context: context,
-    builder: (context) {
+    builder: (BuildContext context) {
       return Dialog(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
         ),
         elevation: 5,
         child: Container(
-          constraints: BoxConstraints(maxWidth: 400),
+          constraints: const BoxConstraints(maxWidth: 400),
           padding: const EdgeInsets.all(20),
           child: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text('Register', style: kDialogTitleStyle),
+                // Dialog title: "Register"
+                Text(Translations.text('register'), style: kDialogTitleStyle),
                 const SizedBox(height: 20),
+                // Email TextField.
                 TextField(
                   controller: emailController,
                   decoration: kInputDecoration.copyWith(
-                    labelText: 'Enter your email',
+                    labelText: Translations.text('enterYourEmail'),
                   ),
                   keyboardType: TextInputType.emailAddress,
                 ),
                 const SizedBox(height: 10),
+                // Password TextField.
                 TextField(
                   controller: passwordController,
                   decoration: kInputDecoration.copyWith(
-                    labelText: 'Enter your password',
+                    labelText: Translations.text('enterYourPassword'),
                   ),
                   obscureText: true,
                 ),
                 const SizedBox(height: 20),
+                // "Or register with Google:" text.
                 Text(
-                  'Or register with Google:',
-                  style: TextStyle(fontSize: 16),
+                  Translations.text('orRegisterWithGoogle'),
+                  style: const TextStyle(fontSize: 16),
                 ),
                 const SizedBox(height: 10),
+                // Google Sign-In option.
                 GestureDetector(
                   onTap: handleGoogleSignIn,
                   child: Image.asset(
@@ -126,45 +150,52 @@ void showRegisterDialog(BuildContext context, FirebaseAuth auth,
                       onPressed: () {
                         Navigator.of(context).pop();
                       },
-                      child: Text('Cancel'),
+                      child: Text(Translations.text('cancel')),
                     ),
                     const SizedBox(width: 10),
                     ElevatedButton(
                       style: kElevatedButtonStyle,
                       onPressed: () async {
                         final email = emailController.text.trim();
+
                         if (!isValidEmail(email)) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                              content:
-                                  Text('Please enter a valid email address.'),
+                              content: Text(
+                                  Translations.text('pleaseEnterValidEmail')),
                             ),
                           );
                           return;
                         }
+
                         // Check if the email is already in use.
                         final signInMethods =
                             await auth.fetchSignInMethodsForEmail(email);
+
                         if (signInMethods.isNotEmpty) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                              content: Text(
-                                  'This email is already in use. Please use a different email address.'),
+                              content:
+                                  Text(Translations.text('emailAlreadyInUse')),
                             ),
                           );
                           return;
                         }
+
                         try {
                           UserCredential userCredential =
                               await auth.createUserWithEmailAndPassword(
                             email: email,
                             password: passwordController.text,
                           );
+
                           // Send verification email.
                           if (userCredential.user != null) {
                             await userCredential.user!.sendEmailVerification();
                           }
+                          // Update display name to something more user-friendly.
                           updateDisplayName(email.split('@')[0]);
+
                           Navigator.of(context).pop(); // Close register dialog.
 
                           // Navigate to the Email Verification Screen.
@@ -178,28 +209,33 @@ void showRegisterDialog(BuildContext context, FirebaseAuth auth,
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(
-                                  'Registration Successful! A verification email has been sent. Please verify your email.'),
+                                  Translations.text('registrationSuccessful')),
                             ),
                           );
                         } on FirebaseAuthException catch (e) {
                           if (e.code == 'email-already-in-use') {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
-                                  content: Text(
-                                      'This email is already in use. Please use a different email address.')),
+                                content: Text(
+                                    Translations.text('emailAlreadyInUse')),
+                              ),
                             );
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('Error: ${e.message}')),
+                              SnackBar(
+                                  content: Text(
+                                      '${Translations.text('error')}: ${e.message}')),
                             );
                           }
                         } catch (e) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('Error: ${e.toString()}')),
+                            SnackBar(
+                                content:
+                                    Text('${Translations.text('error')}: $e')),
                           );
                         }
                       },
-                      child: Text('Register'),
+                      child: Text(Translations.text('register')),
                     ),
                   ],
                 ),
@@ -210,7 +246,7 @@ void showRegisterDialog(BuildContext context, FirebaseAuth auth,
                     Navigator.of(context).pop();
                     showSignInDialog(context, auth, updateDisplayName);
                   },
-                  child: Text("Already have an account? Sign In"),
+                  child: Text(Translations.text('alreadyHaveAccountSignIn')),
                 ),
               ],
             ),

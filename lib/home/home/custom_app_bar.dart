@@ -1,4 +1,3 @@
-import 'package:ez8app/home/home/mycart/cart.dart';
 import 'package:ez8app/home/home/showRegisterDialog.dart';
 import 'package:ez8app/home/home/showSignInDialog.dart';
 import 'package:ez8app/home/translations/translations.dart';
@@ -176,14 +175,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
                   // Draw the dotted/solid line below it
                   const PopupMenuDivider(),
 
-                  // My Order
-                  PopupMenuItem<String>(
-                    value: 'MyOrder',
-                    child: Text(
-                      Translations.text('myOrder'),
-                      style: const TextStyle(fontSize: 16),
-                    ),
-                  ),
+                  // Removed MyOrder popup item here.
 
                   // If user not signed in -> Show Sign In & Register
                   // else -> Show Sign Out
@@ -222,22 +214,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
   /// Handle selections in the profile icon popup
   void _handleProfileSelection(String value) {
     switch (value) {
-      case 'MyOrder':
-        if (_auth.currentUser == null) {
-          // If not signed in, prompt sign in
-          showSignInDialog(context, _auth, (name) {
-            setState(() {
-              displayStatus = '${Translations.text('welcome')} $name';
-            });
-          });
-        } else {
-          // Navigate to MyOrder page
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => CartPage()),
-          );
-        }
-        break;
+      // Removed case 'MyOrder': block.
 
       case 'SignIn':
         showSignInDialog(context, _auth, (name) {

@@ -6,9 +6,20 @@ class Translations {
   static ValueNotifier<String> currentLanguage = ValueNotifier('German');
 
   /// The localized values for each supported language.
-  /// Each language maps keys (like 'signIn', 'orderNow', etc.) to their translations.
   static final Map<String, Map<String, String>> _localizedValues = {
     'English': {
+      'orRegisterWithGoogle': 'Or register with Google:',
+      'pleaseEnterValidEmail': 'Please enter a valid email address.',
+      'emailAlreadyInUse':
+          'This email is already in use. Please use a different email address.',
+      'registrationSuccessful':
+          'Registration Successful! A verification email has been sent. Please verify your email.',
+      'error': 'Error',
+      'googleSignInSuccessful': 'Google Sign-In Successful! Welcome!',
+      'googleSignInError': 'Google Sign-In Error: %{error}',
+      'googleUser': 'Google User',
+      'alreadyHaveAccountSignIn': 'Already have an account? Sign In',
+
       'signInRegister': 'Sign In / Register',
       'signIn': 'Sign In',
       'register': 'Register',
@@ -20,6 +31,16 @@ class Translations {
       'price': 'Price',
       'orderNow': 'Order Now',
       'myOrder': 'My Order',
+
+      // NEW KEYS for Sign-In Dialog
+      'enterYourEmail': 'Enter your email',
+      'enterYourPassword': 'Enter your password',
+      'signInWithGoogle': 'Sign in with Google',
+      'cancel': 'Cancel',
+      'incorrectUserOrPassword': 'Incorrect user or password',
+      'signInSuccessful': 'Sign In Successful!',
+      'forgotPassword': 'Forgot Password?',
+      'dontHaveAccountSignup': 'Don\'t have an account? Signup',
 
       // MenuPage
       'whatsappError': 'Could not launch WhatsApp',
@@ -108,6 +129,19 @@ class Translations {
       'showCart': 'Show Cart',
     },
     'German': {
+      'orRegisterWithGoogle': 'Oder registriere dich mit Google:',
+      'pleaseEnterValidEmail':
+          'Bitte geben Sie eine gültige E-Mail-Adresse ein.',
+      'emailAlreadyInUse':
+          'Diese E-Mail wird bereits verwendet. Bitte verwenden Sie eine andere E-Mail-Adresse.',
+      'registrationSuccessful':
+          'Registrierung erfolgreich! Eine Bestätigungs-E-Mail wurde gesendet. Bitte bestätigen Sie Ihre E-Mail.',
+      'error': 'Fehler',
+      'googleSignInSuccessful': 'Google-Anmeldung erfolgreich! Willkommen!',
+      'googleSignInError': 'Google-Anmeldung Fehler: %{error}',
+      'googleUser': 'Google Benutzer',
+      'alreadyHaveAccountSignIn': 'Haben Sie bereits ein Konto? Anmelden',
+
       'signInRegister': 'Anmelden / Registrieren',
       'signIn': 'Anmelden',
       'register': 'Registrieren',
@@ -119,6 +153,16 @@ class Translations {
       'price': 'Preis',
       'orderNow': 'Jetzt bestellen',
       'myOrder': 'Meine Bestellung',
+
+      // NEW KEYS for Sign-In Dialog
+      'enterYourEmail': 'Geben Sie Ihre E-Mail ein',
+      'enterYourPassword': 'Geben Sie Ihr Passwort ein',
+      'signInWithGoogle': 'Mit Google anmelden',
+      'cancel': 'Abbrechen',
+      'incorrectUserOrPassword': 'Falscher Benutzer oder falsches Passwort',
+      'signInSuccessful': 'Anmeldung erfolgreich!',
+      'forgotPassword': 'Passwort vergessen?',
+      'dontHaveAccountSignup': 'Noch kein Konto? Registrieren',
 
       // MenuPage
       'whatsappError': 'WhatsApp konnte nicht geöffnet werden',
@@ -168,7 +212,7 @@ class Translations {
       'kitchen': 'Küche',
       'onTheWay': 'Unterwegs',
       'delivered': 'Geliefert',
-      'cancel': 'Stornieren',
+      'cancel': 'Stornieren', // Reused key but different meaning
       'noOrdersInCategory': 'Keine Bestellungen in dieser Kategorie.',
       'timeLeft': 'Verbleibende Zeit:',
       'customer': 'Kunde',
@@ -210,6 +254,18 @@ class Translations {
       'showCart': 'Warenkorb anzeigen',
     },
     'French': {
+      // ... your other keys ...
+      'orRegisterWithGoogle': 'Ou inscrivez-vous avec Google:',
+      'pleaseEnterValidEmail': 'Veuillez entrer une adresse e-mail valide.',
+      'emailAlreadyInUse':
+          'Cet e-mail est déjà utilisé. Veuillez utiliser une autre adresse e-mail.',
+      'registrationSuccessful':
+          'Inscription réussie ! Un e-mail de vérification a été envoyé. Veuillez vérifier votre e-mail.',
+      'error': 'Erreur',
+      'googleSignInSuccessful': 'Connexion Google réussie ! Bienvenue !',
+      'googleSignInError': 'Erreur de connexion Google : %{error}',
+      'googleUser': 'Utilisateur Google',
+      'alreadyHaveAccountSignIn': 'Vous avez déjà un compte ? Connectez-vous',
       'signInRegister': 'Se connecter / S\'inscrire',
       'signIn': 'Se connecter',
       'register': 'S\'inscrire',
@@ -221,6 +277,16 @@ class Translations {
       'price': 'Prix',
       'orderNow': 'Commander maintenant',
       'myOrder': 'Ma commande',
+
+      // NEW KEYS for Sign-In Dialog
+      'enterYourEmail': 'Entrez votre e-mail',
+      'enterYourPassword': 'Entrez votre mot de passe',
+      'signInWithGoogle': 'Se connecter avec Google',
+      'cancel': 'Annuler',
+      'incorrectUserOrPassword': 'Nom d\'utilisateur ou mot de passe incorrect',
+      'signInSuccessful': 'Connexion réussie!',
+      'forgotPassword': 'Mot de passe oublié ?',
+      'dontHaveAccountSignup': 'Vous n\'avez pas de compte? Inscrivez-vous',
 
       // MenuPage
       'whatsappError': 'Impossible de lancer WhatsApp',
@@ -269,7 +335,7 @@ class Translations {
       'kitchen': 'Cuisine',
       'onTheWay': 'En route',
       'delivered': 'Livré',
-      'cancel': 'Annuler',
+      'cancel': 'Annuler', // Reused key but different meaning
       'noOrdersInCategory': 'Aucune commande dans cette catégorie.',
       'timeLeft': 'Temps restant :',
       'customer': 'Client',
